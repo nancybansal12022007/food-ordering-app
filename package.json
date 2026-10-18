@@ -7,7 +7,7 @@
     "build": "parcel build index.html",
     "test": "jest"
   },
-  "author": "Yashwin Tapdiya",
+  "author": "Nancy Bansal",
   "license": "ISC",
   "devDependencies": {
     "parcel": "^2.11.0",

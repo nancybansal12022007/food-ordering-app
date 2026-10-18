@@ -12,36 +12,52 @@ const RestaurantMenu = () => {
   const [showIndex, setShowIndex] = useState(null);
 
   if (resInfo === null) return <ShimmerMenu />;
-  const { name, cuisines, costForTwoMessage } =
-    resInfo?.cards[0]?.card?.card?.info;
 
-  // console.log(
-  //   resInfo.cards[2].groupedCard.cardGroupMap.REGULAR.cards[1].card.card
-  // );
-  //console.log(resInfo.cards[2].groupedCard.cardGroupMap.REGULAR.cards[1].card.card);
-  const { itemCards } =
-    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
+  // 1. Safely find the restaurant info card across the cards array
+  const restaurantInfoCard = resInfo?.cards?.find(
+    (c) => c?.card?.card?.info
+  )?.card?.card?.info;
 
-  const categories =
-    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
-      (c) =>
-        c.card?.card?.["@type"] ===
-        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
-    );
+  const { name = "", cuisines = [], costForTwoMessage = "" } = restaurantInfoCard || {};
+
+  // 2. Safely find the groupedCard object across resInfo.cards
+  const groupedCard = resInfo?.cards?.find(
+    (c) => c?.groupedCard
+  )?.groupedCard;
+
+  // 3. Safely find the regular cards array inside cardGroupMap
+  const regularCards = groupedCard?.cardGroupMap?.REGULAR?.cards || [];
+
+  // 4. Find the card containing itemCards
+  const itemCardsObj = regularCards?.find(
+    (c) => c?.card?.card?.itemCards
+  )?.card?.card;
+
+  // 5. Safely destructure itemCards with an empty array fallback
+  const { itemCards = [] } = itemCardsObj || {};
+
+  // 6. Safely filter categories with fallback to empty array
+  const categories = regularCards.filter(
+    (c) =>
+      c?.card?.card?.["@type"] ===
+      "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+  );
+
   const toggleAccordion = (index) => {
     setShowIndex((prevIndex) => (prevIndex === index ? null : index));
   };
+
   return (
     <div className="text-center">
       <h1 className="font-bold my-6 text-2xl">{name}</h1>
       <p className="font-bold text-lg">
-        {cuisines.join(", ")} - {costForTwoMessage}
+        {cuisines.join(", ")} {costForTwoMessage && `- ${costForTwoMessage}`}
       </p>
       {/* categories accordions */}
-      {categories.map((category, index) => (
-        //controlled component
+      {categories?.map((category, index) => (
+        // controlled component
         <RestaurantCategory
-          key={category?.card?.card.title}
+          key={category?.card?.card?.title || index}
           data={category?.card?.card}
           showItems={index === showIndex}
           setShowIndex={() => toggleAccordion(index)}

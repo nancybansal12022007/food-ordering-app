@@ -22,7 +22,7 @@ const AppLayout = () => {
     //authentication and api calls......
     //we recieve data
     const data = {
-      name: "Yashwin Tapdiya",
+      name: "Nancy Bansal",
     };
     setUserName(data.name);
   }, []);

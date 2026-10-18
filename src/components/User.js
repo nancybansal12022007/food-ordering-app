@@ -13,7 +13,7 @@ const User = () => {
         Button
       </button>
       <h1>count: {count}</h1>
-      <h2>Yashwin Tapdiya</h2>
+      <h2>Nancy Bansal</h2>
       <h2>Location: Indore</h2>
       <h4>Contact: 8085720505</h4>
     </div>
